@@ -23,8 +23,8 @@ This pipeline assembles Illumina paired end reads. It results in a scaffold and 
   <Sample_ID>               Unique identifier for the sample<br />
   <Reads_R1>                Foreward read file<br />
   <Reads_R2>                Reversed read file<br />
-  <Genus_>                  Genus name of the bacterial species<br />
-  <species_>                Species name of the bacterial species<br />
+  <Genus_>                   Genus name of the bacterial species<br />
+  <species_>                 Species name of the bacterial species<br />
   <Number_of_cores>         number of parallel threads to run (int)<br />
 
 #example:

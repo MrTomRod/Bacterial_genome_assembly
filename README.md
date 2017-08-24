@@ -18,35 +18,35 @@ This pipeline assembles Illumina paired end reads. It results in a scaffold and 
 
 #Usage:
 
-  sh bacteria_assembly.sh <Sample_ID> <Reads_R1> <Reads_R2> <Genus> <species> <Number_of_cores>
+  sh bacteria_assembly.sh <Sample_ID> <Reads_R1> <Reads_R2> <Genus> <species> <Number_of_cores><br />
  
-  <Sample_ID>               Unique identifier for the sample
-  <Reads_R1>                Foreward read file
-  <Reads_R2>                Reversed read file
-  <Genus>                   Genus name of the bacterial species
-  <species>                 Species name of the bacterial species
-  <Number_of_cores>         number of parallel threads to run (int)
+  <Sample_ID>               Unique identifier for the sample<br />
+  <Reads_R1>                Foreward read file<br />
+  <Reads_R2>                Reversed read file<br />
+  <Genus>                   Genus name of the bacterial species<br />
+  <species>                 Species name of the bacterial species<br />
+  <Number_of_cores>         number of parallel threads to run (int)<br />
 
 #example:
 
-"
-#!/bin/sh
-#$ -q all.q
-#$ -e $JOB_ID.cov.err
-#$ -o $JOB_ID.cov.out
-#$ -cwd
-#$ -pe smp 24
 
-module add UHTS/Assembler/SPAdes/3.10.1;
-module add UHTS/Analysis/samtools/1.3;
-module add UHTS/Analysis/prokka/1.12;
-module add UHTS/Aligner/bowtie2/2.3.0;
+#!/bin/sh<br />
+#$ -q all.q<br />
+#$ -e $JOB_ID.cov.err<br />
+#$ -o $JOB_ID.cov.out<br />
+#$ -cwd<br />
+#$ -pe smp 24<br />
 
-for i in FAM22234
+module add UHTS/Assembler/SPAdes/3.10.1;<br />
+module add UHTS/Analysis/samtools/1.3;<br />
+module add UHTS/Analysis/prokka/1.12;<br />
+module add UHTS/Aligner/bowtie2/2.3.0;<br />
 
-do
+for i in FAM22234<br />
 
-sh /home/dwuethrich/Application/assembly_pipeline/bacteria_assembly.sh "$i" ../../reads/"$i"_R1.fastq.gz ../../reads/"$i"_R2.fastq.gz Pediococcus acidilactici "$NSLOTS"
+do<br />
 
-done
-"
+sh /home/dwuethrich/Application/assembly_pipeline/bacteria_assembly.sh "$i" ../../reads/"$i"_R1.fastq.gz ../../reads/"$i"_R2.fastq.gz Pediococcus acidilactici "$NSLOTS"<br />
+
+done<br />
+

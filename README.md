@@ -15,6 +15,8 @@ This pipeline assembles Illumina paired end reads. It results in a scaffold and 
 
 #Installation:
 
+wget https://github.com/danielwuethrich87/Bacterial_genome_assembly/archive/master.zip
+unzip master.zip
 
 #Usage:
 

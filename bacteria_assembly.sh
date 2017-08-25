@@ -92,6 +92,8 @@ prokka --genus "$genus" --species "$species" --mincontiglen 200 --prefix "$sampl
 
 rm "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sam "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sorted.bam
 
+cp "$working_dir"/results/"$sample_id"/2_cov_selection/Low_coverage_and_short_scaffolds_"$sample_id".fasta "$working_dir"/results/"$sample_id"/3_annotation/
+
 echo "$sample_id" finished `date`
 
 

@@ -52,6 +52,7 @@ then
 
 #actual analysis---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+#trimmomatic-------------------------------------------------------------------------------------------------------------------------
 
 
 mkdir -p "$working_dir"/results/"$sample_id"/0_read_trimming
@@ -75,7 +76,7 @@ cp "$working_dir"/results/"$sample_id"/1_spades_assembly/scaffolds.fasta "$worki
 bowtie2-build "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.fa "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds
 bowtie2 -p "$cores" --un-conc-gz "$working_dir"/results/"$sample_id"/2_cov_selection/not_aligned_reads.fastq.gz -x "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds -1 "$working_dir"/results/"$sample_id"/0_read_trimming/r1.fastq.gz -2 "$working_dir"/results/"$sample_id"/0_read_trimming/r2.fastq.gz -S "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sam 2> "$working_dir"/results/"$sample_id"/2_cov_selection/mapping_Info."$sample_id"
 
-samtools sort -@ "$NSLOTS" -T "$working_dir"/results/"$sample_id"/2_cov_selection/temp_sort -o "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sorted.bam "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sam
+samtools sort -@ "$cores" -T "$working_dir"/results/"$sample_id"/2_cov_selection/temp_sort -o "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sorted.bam "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sam
 samtools rmdup "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sorted.bam "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sorted.removed_duplicates.bam
 samtools index "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sorted.removed_duplicates.bam
 samtools faidx "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.fa
@@ -83,10 +84,11 @@ samtools faidx "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.fa
 samtools idxstats "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sorted.removed_duplicates.bam > "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.idxstats
 
 python "$software_location"/software/filter_contigs_by_samtools_idxstats.py  "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.fa "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.idxstats 0.1 "$working_dir"/results/"$sample_id"/2_cov_selection/Low_coverage_and_short_scaffolds_"$sample_id".fasta > "$working_dir"/results/"$sample_id"/2_cov_selection/"$sample_id".fasta
+#the 0.1 indicates the min coverage a scaffold must have, compared to large scaffolds
 
 #prokka-------------------------------------------------------------------------------------------------------------------------
 
-prokka --genus "$genus" --species "$species" --mincontiglen 200 --prefix "$sample_id" --rfam --locustag "$sample_id" --addgenes --strain "$sample_id" --outdir "$working_dir"/results/"$sample_id"/3_annotation --cpus $NSLOTS "$working_dir"/results/"$sample_id"/2_cov_selection/"$sample_id".fasta
+prokka --genus "$genus" --species "$species" --mincontiglen 200 --prefix "$sample_id" --rfam --locustag "$sample_id" --addgenes --strain "$sample_id" --outdir "$working_dir"/results/"$sample_id"/3_annotation --cpus $cores "$working_dir"/results/"$sample_id"/2_cov_selection/"$sample_id".fasta
 
 #clean-up-------------------------------------------------------------------------------------------------------------------------
 

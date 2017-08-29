@@ -3,6 +3,12 @@ Bacterial genome assembly pipeline
 
 This pipeline assembles Illumina paired end reads. It results in a scaffold and annotated assembly.
 
+Steps:
+-Read trimming
+-SPades de novo assembly
+-Coverage selelction (exclusion of scaffold with low coverage)
+-Prokka annotation
+
 #Requirements:
 
 -Linux 64 bit system<br />

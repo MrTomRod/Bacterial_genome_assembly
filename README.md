@@ -6,7 +6,7 @@ This pipeline assembles Illumina paired end reads. It results in a scaffold and 
 Steps:<br />
 -Read trimming<br />
 -SPades de novo assembly<br />
--Coverage selelction (exclusion of scaffold with low coverage)<br />
+-Coverage selection (exclusion of scaffold with low coverage)<br />
 -Prokka annotation<br />
 
 #Requirements:

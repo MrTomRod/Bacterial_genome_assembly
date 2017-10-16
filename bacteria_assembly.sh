@@ -43,7 +43,7 @@ is_command_installed python
 is_command_installed spades.py
 is_command_installed samtools
 is_command_installed prokka
-is_command_installed bowtie2
+is_command_installed bwa
 echo
 
 if [ -r "$reads_R1" ] && [ -r "$reads_R2" ] && [ -n "$sample_id" ] && [ "$cores" -eq "$cores" ] && [ -n "$genus" ] && [ -n "$species" ]
@@ -66,35 +66,46 @@ mkdir -p "$working_dir"/results/"$sample_id"/1_spades_assembly
 
 spades.py --careful --mismatch-correction -t "$cores" -k 21,33,55,77,99,127 -1 "$working_dir"/results/"$sample_id"/0_read_trimming/r1.fastq.gz -2 "$working_dir"/results/"$sample_id"/0_read_trimming/r2.fastq.gz -o "$working_dir"/results/"$sample_id"/1_spades_assembly
 
+#pilon-------------------------------------------------------------------------------------------------------------------------
+
+mkdir -p "$working_dir"/results/"$sample_id"/2_pilon/pilon
+
+bwa index "$working_dir"/results/"$sample_id"/1_spades_assembly/scaffolds.fasta
+bwa mem -t "$NSLOTS" "$working_dir"/results/"$sample_id"/1_spades_assembly/scaffolds.fasta "$working_dir"/results/"$sample_id"/0_read_trimming/r1.fastq.gz "$working_dir"/results/"$sample_id"/0_read_trimming/r2.fastq.gz > "$working_dir"/results/"$sample_id"/2_pilon/alingnment.sam
+
+samtools sort -@ "$NSLOTS" -T "$i"_temp -o "$working_dir"/results/"$sample_id"/2_pilon/sorted.bam "$working_dir"/results/"$sample_id"/2_pilon/alingnment.sam
+samtools index "$working_dir"/results/"$sample_id"/2_pilon/sorted.bam
+
+java -Xmx16G -jar "$software_location"/software/pilon-1.22.jar --genome "$working_dir"/results/"$sample_id"/1_spades_assembly/scaffolds.fasta --frags "$working_dir"/results/"$sample_id"/2_pilon/sorted.bam --changes --variant --outdir "$working_dir"/results/"$sample_id"/2_pilon/pilon --output "$sample_id"
+
+
 #coverage_selection-------------------------------------------------------------------------------------------------------------------------
 
 
-mkdir -p "$working_dir"/results/"$sample_id"/2_cov_selection
+mkdir -p "$working_dir"/results/"$sample_id"/3_cov_selection
 
-cp "$working_dir"/results/"$sample_id"/1_spades_assembly/scaffolds.fasta "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.fa
+bwa index "$working_dir"/results/"$sample_id"/2_pilon/pilon/"$sample_id".fasta
+bwa mem -t "$cores" "$working_dir"/results/"$sample_id"/2_pilon/pilon/"$sample_id".fasta "$working_dir"/results/"$sample_id"/0_read_trimming/r1.fastq.gz "$working_dir"/results/"$sample_id"/0_read_trimming/r2.fastq.gz > "$working_dir"/results/"$sample_id"/3_cov_selection/scaffolds.sam 2> "$working_dir"/results/"$sample_id"/3_cov_selection/mapping_Info."$sample_id"
 
-bowtie2-build "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.fa "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds
-bowtie2 -p "$cores" --un-conc-gz "$working_dir"/results/"$sample_id"/2_cov_selection/not_aligned_reads.fastq.gz -x "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds -1 "$working_dir"/results/"$sample_id"/0_read_trimming/r1.fastq.gz -2 "$working_dir"/results/"$sample_id"/0_read_trimming/r2.fastq.gz -S "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sam 2> "$working_dir"/results/"$sample_id"/2_cov_selection/mapping_Info."$sample_id"
+samtools sort -@ "$cores" -T "$working_dir"/results/"$sample_id"/3_cov_selection/temp_sort -o "$working_dir"/results/"$sample_id"/3_cov_selection/scaffolds.sorted.bam "$working_dir"/results/"$sample_id"/3_cov_selection/scaffolds.sam
+samtools rmdup "$working_dir"/results/"$sample_id"/3_cov_selection/scaffolds.sorted.bam "$working_dir"/results/"$sample_id"/3_cov_selection/scaffolds.sorted.removed_duplicates.bam
+samtools index "$working_dir"/results/"$sample_id"/3_cov_selection/scaffolds.sorted.removed_duplicates.bam
+samtools faidx "$working_dir"/results/"$sample_id"/2_pilon/pilon/"$sample_id".fasta
 
-samtools sort -@ "$cores" -T "$working_dir"/results/"$sample_id"/2_cov_selection/temp_sort -o "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sorted.bam "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sam
-samtools rmdup "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sorted.bam "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sorted.removed_duplicates.bam
-samtools index "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sorted.removed_duplicates.bam
-samtools faidx "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.fa
+samtools idxstats "$working_dir"/results/"$sample_id"/3_cov_selection/scaffolds.sorted.removed_duplicates.bam > "$working_dir"/results/"$sample_id"/3_cov_selection/scaffolds.idxstats
 
-samtools idxstats "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sorted.removed_duplicates.bam > "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.idxstats
-
-python "$software_location"/software/filter_contigs_by_samtools_idxstats.py  "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.fa "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.idxstats 0.1 "$working_dir"/results/"$sample_id"/2_cov_selection/Low_coverage_and_short_scaffolds_"$sample_id".fasta > "$working_dir"/results/"$sample_id"/2_cov_selection/"$sample_id".fasta
+python "$software_location"/software/filter_contigs_by_samtools_idxstats.py  "$working_dir"/results/"$sample_id"/2_pilon/pilon/"$sample_id".fasta "$working_dir"/results/"$sample_id"/3_cov_selection/scaffolds.idxstats 0.1 "$working_dir"/results/"$sample_id"/3_cov_selection/Low_coverage_and_short_scaffolds_"$sample_id".fasta > "$working_dir"/results/"$sample_id"/3_cov_selection/"$sample_id".fasta
 #the 0.1 indicates the min coverage a scaffold must have, compared to large scaffolds
 
 #prokka-------------------------------------------------------------------------------------------------------------------------
 
-prokka --genus "$genus" --species "$species" --mincontiglen 200 --prefix "$sample_id" --rfam --locustag "$sample_id" --addgenes --strain "$sample_id" --outdir "$working_dir"/results/"$sample_id"/3_annotation --cpus $cores "$working_dir"/results/"$sample_id"/2_cov_selection/"$sample_id".fasta
+prokka --addgenes --mincontiglen 200 --genus "$genus" --species "$species" --prefix "$sample_id" --rfam --locustag "$sample_id" --strain "$sample_id" --outdir "$working_dir"/results/"$sample_id"/4_annotation --cpus $cores "$working_dir"/results/"$sample_id"/3_cov_selection/"$sample_id".fasta
 
 #clean-up-------------------------------------------------------------------------------------------------------------------------
 
-rm "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sam "$working_dir"/results/"$sample_id"/2_cov_selection/scaffolds.sorted.bam
+rm "$working_dir"/results/"$sample_id"/3_cov_selection/scaffolds.sam "$working_dir"/results/"$sample_id"/3_cov_selection/scaffolds.sorted.bam
 
-cp "$working_dir"/results/"$sample_id"/2_cov_selection/Low_coverage_and_short_scaffolds_"$sample_id".fasta "$working_dir"/results/"$sample_id"/3_annotation/
+cp "$working_dir"/results/"$sample_id"/3_cov_selection/Low_coverage_and_short_scaffolds_"$sample_id".fasta "$working_dir"/results/"$sample_id"/4_annotation/
 
 echo "$sample_id" finished `date`
 
@@ -138,4 +149,5 @@ echo Incorrect input: "$reference_name"
 fi
 
 fi
+
 

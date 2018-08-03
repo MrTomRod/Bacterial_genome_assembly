@@ -21,7 +21,7 @@ Steps:
 
 # Installation:
 
-wget https://github.com/danielwuethrich87/Bacterial_genome_assembly/archive/master.zip
+wget https://github.com/MrTomRod/Bacterial_genome_assembly/archive/master.zip
 unzip master.zip
 
 # Usage:
@@ -35,8 +35,7 @@ unzip master.zip
     <species_>                Species name of the bacterial species
     <Number_of_cores>         number of parallel threads to run (int)
 
-# example:
-
+# Example:
 
     #!/bin/sh
     #$ -q all.q

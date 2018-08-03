@@ -17,7 +17,8 @@ Steps:
 - samtools (version 1.3)
 - prokka (version 1.12)
 - bowtie2 (version 2.3.0)
-- pilon (version 1.2.2)
+- "pilon":https://github.com/broadinstitute/pilon/releases (version 1.2.2, already installed in /software)
+- "barrnap":https://github.com/tseemann/barrnap/tree/master/bin (version 1.2.2, already installed in /software)
 
 # Installation:
 

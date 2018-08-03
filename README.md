@@ -13,12 +13,13 @@ Steps:
 
 - Linux 64 bit system
 - python (version 2.7)
-- SPAdes (version 3.10.1)
-- samtools (version 1.3)
-- prokka (version 1.12)
-- bowtie2 (version 2.3.0)
+- [SPAdes](http://cab.spbu.ru/software/spades/) (version 3.10.1)
+- [samtools](https://github.com/samtools/samtools) (version 1.3)
+- [prokka](https://github.com/tseemann/prokka) (version 1.12)
+- [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) (version 2.3.0)
 - [pilon](https://github.com/broadinstitute/pilon/releases) (version 1.2.2, already installed in /software)
 - [barrnap](https://github.com/tseemann/barrnap/tree/master/bin) (version 0.9, already installed in /software)
+- [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) (version 0.36, already installed in /software)
 
 # Installation:
 

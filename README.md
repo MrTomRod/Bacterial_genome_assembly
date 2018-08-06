@@ -12,6 +12,7 @@ Steps:
 # Requirements:
 
 - Linux 64 bit system
+- Slurm (tested on version 17.11.7)
 - python (version 2.7)
 - [SPAdes](http://cab.spbu.ru/software/spades/) (version 3.10.1)
 - [samtools](https://github.com/samtools/samtools) (version 1.3)

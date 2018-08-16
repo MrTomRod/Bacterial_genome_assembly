@@ -44,6 +44,6 @@ Place the two input files in `/input`.
     <species_>                Species name of the bacterial species
     <Number_of_cores>         number of parallel threads to run (int)
     
-A test run took about 15 minutes on the IBU cluster. Naturally, if you're planning to assemble multiple genomes, the total run time will be longer. Keep in mind to adapt the batch file's maximum run time accordingly! (`#SBATCH --time=??`)
+A test run of one genome (each input file was ~70M) took about 25 minutes on the IBU cluster. Obviously, if you're planning to assemble multiple genomes, the total run time will be longer. Keep in mind to change the batch file's maximum run time accordingly! (`#SBATCH --time=??`)
     
 Now simply disbatch the script to SLURM with `sbatch run_bacteria_assembly.sh`.

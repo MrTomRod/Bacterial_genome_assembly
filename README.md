@@ -1,6 +1,8 @@
 Bacterial genome assembly pipeline
 =======================
 
+This is a fork of danielwuethrich87/Bacterial_genome_assembly, optimized for SLURM by Simone Oberhansli.
+
 This pipeline assembles Illumina paired end reads. It results in a scaffold and annotated assembly.
 
 Steps:
@@ -29,7 +31,11 @@ unzip master.zip
 
 # Usage:
 
-    sh bacteria_assembly.sh <Sample_ID> <Reads_R1> <Reads_R2> <Genus_> <species_> <Number_of_cores>
+Place input files in /input
+
+`run_bacteria_assembly.sh` is a SLURM batch script that runs `bacteria_assembly.sh` (as you might have guessed). In most cases, everything you have to do is edit the line that begins with $DIR/bacteria_assembly_slurm.sh according to your needs.
+
+    $DIR/bacteria_assembly_slurm.sh <Sample_ID> <Reads_R1> <Reads_R2> <Genus_> <species_> <Number_of_cores>
  
     <Sample_ID>               Unique identifier for the sample
     <Reads_R1>                Foreward read file
@@ -37,23 +43,5 @@ unzip master.zip
     <Genus_>                  Genus name of the bacterial species
     <species_>                Species name of the bacterial species
     <Number_of_cores>         number of parallel threads to run (int)
-
-# Example:
-
-    #!/bin/sh
-    #$ -q all.q
-    #$ -e $JOB_ID.cov.err
-    #$ -o $JOB_ID.cov.out
-    #$ -cwd
-    #$ -pe smp 24
-
-    module add UHTS/Assembler/SPAdes/3.10.1;
-    module add UHTS/Analysis/samtools/1.3;
-    module add UHTS/Analysis/prokka/1.12;
-    module add UHTS/Aligner/bowtie2/2.3.0;
-
-    for i in FAM22234
-    do
-      sh /home/dwuethrich/Application/assembly_pipeline/bacteria_assembly.sh "$i" ../../reads/"$i"_R1.fastq.gz ../../reads/"$i"_R2.fastq.gz Pediococcus acidilactici "$NSLOTS"
-    done
-
+    
+Now simply disbatch the script to SLURM with `sbatch run_bacteria_assembly.sh`.

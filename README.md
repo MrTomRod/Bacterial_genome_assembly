@@ -1,7 +1,7 @@
 Bacterial genome assembly pipeline
 =======================
 
-This is a fork of danielwuethrich87/Bacterial_genome_assembly, optimized for SLURM by Simone Oberhansli.
+This is a fork of [danielwuethrich87/Bacterial_genome_assembly](https://github.com/danielwuethrich87/Bacterial_genome_assembly), optimized for SLURM by Simone Oberhansli.
 
 This pipeline assembles Illumina paired end reads. It results in a scaffold and annotated assembly.
 

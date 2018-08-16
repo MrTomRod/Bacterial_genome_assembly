@@ -3,7 +3,7 @@ Bacterial genome assembly pipeline
 
 This is a fork of [danielwuethrich87/Bacterial_genome_assembly](https://github.com/danielwuethrich87/Bacterial_genome_assembly), optimized for SLURM by Simone Oberhansli.
 
-This pipeline assembles Illumina paired end reads. It results in a scaffold and annotated assembly.
+This pipeline assembles **Illumina paired end reads**. It results in a scaffold and annotated assembly.
 
 Steps:
 - Read trimming
@@ -31,7 +31,7 @@ unzip master.zip
 
 # Usage:
 
-Place input files in /input
+Place the two input files in `/input`.
 
 `run_bacteria_assembly.sh` is a SLURM batch script that runs `bacteria_assembly.sh` (as you might have guessed). In most cases, everything you have to do is edit the line that begins with $DIR/bacteria_assembly_slurm.sh according to your needs.
 

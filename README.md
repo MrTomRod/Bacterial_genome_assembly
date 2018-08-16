@@ -26,8 +26,7 @@ Steps:
 
 # Installation:
 
-wget https://github.com/MrTomRod/Bacterial_genome_assembly/archive/master.zip
-unzip master.zip
+`git clone https://github.com/MrTomRod/Bacterial_genome_assembly.git`
 
 # Usage:
 
